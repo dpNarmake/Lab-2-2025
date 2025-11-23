@@ -4,6 +4,7 @@ public class TabulatedFunction {
 
     private FunctionPoint[] points;
     private int size;
+    private static final double eps = 1e-10;
 
     public TabulatedFunction(double leftX, double rightX, int pointsCount) {
         points = new FunctionPoint[pointsCount];
@@ -33,6 +34,10 @@ public class TabulatedFunction {
 
     public double getFunctionValue(double x) {
         if ((size == 0) || (x < getLeftDomainBorder()) || x > getRightDomainBorder()) return Double.NaN;
+
+        for (int i = 0; i < size; i++) {
+            if (Math.abs(x - points[i].getX()) < eps) return points[i].getY();
+        }
 
         for (int i = 0; i < size - 1; i++) {
             if (x >= points[i].getX() && x <= points[i + 1].getX()) {
@@ -112,7 +117,7 @@ public class TabulatedFunction {
             if (x < points[i].getX()) {
                 insert_index = i;
                 break;
-            } else if (x == points[i].getX()) {
+            } else if (Math.abs(x - points[i].getX()) < eps) {
                 points[i] = newPoint;
                 return;
             }
